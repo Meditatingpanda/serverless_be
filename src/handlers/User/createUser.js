@@ -2,9 +2,12 @@ import { commonMiddleware } from "../../lib/commonMiddleware.js";
 import createError from "http-errors";
 import { v4 as uuid } from "uuid";
 import { UserType } from "../../enums/CommonEnum.js";
+import aws from "aws-sdk";
+
+const dynamoDb = new aws.DynamoDB.DocumentClient();
 
 const createUserHandler = async (event, context) => {
-  const { email, phone, userType, firstName, lastName, profilePicture } =
+  const { email, phone, userType, firstName, lastName } =
     event.body;
   if (userType === UserType.ADMIN) {
     throw createError.BadRequest("Admin user creation is not allowed");
@@ -24,9 +27,10 @@ const createUserHandler = async (event, context) => {
       userType,
       firstName,
       lastName,
-      profilePicture,
+      
     };
-    await dynamoDbClient
+    console.log(user, "user");
+    await dynamoDb
       .put({
         TableName: process.env.USERS_TABLE_NAME,
         Item: user,

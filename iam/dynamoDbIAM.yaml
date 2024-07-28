@@ -1,6 +1,8 @@
-PropertiesTableIAM:
+UsersTableIAM:
   Effect: Allow
   Action:
     - dynamodb:PutItem
+    - dynamodb:GetItem
+    - dynamodb:DeleteItem
   Resource:
-    - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/Properties-${self:provider.stage}
+    - ${self:custom.UsersTable.arn}
