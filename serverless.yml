@@ -1,0 +1,37 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: easylease
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: bfe
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: easylease-bfe
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: "ap-south-1"
+  environment:
+    USERS_TABLE_NAME: ${self:custom.UsersTable.name}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+resources:
+  Resources:
+    UsersTable: ${file(resources/dynamodb/UserTable.yml):UsersTable}
+    PropertiesTable: ${file(resources/dynamodb/PropertiesTable.yml):PropertiesTable}
+plugins:
+  - serverless-offline
+functions:
+  createUser:
+    handler: src/handlers/User/createUser.handler
+    events:
+      - httpApi:
+          path: /auth/create-user
+          method: post
+custom:
+  UsersTable:
+    name: !Ref UsersTable
+    arn: !GetAtt UsersTable.Arn
