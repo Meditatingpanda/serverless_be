@@ -7,8 +7,7 @@ import aws from "aws-sdk";
 const dynamoDb = new aws.DynamoDB.DocumentClient();
 
 const createUserHandler = async (event, context) => {
-  const { email, phone, userType, firstName, lastName } =
-    event.body;
+  const { email, phone, userType, firstName, lastName } = event.body;
   if (userType === UserType.ADMIN) {
     throw createError.BadRequest("Admin user creation is not allowed");
   }
@@ -27,13 +26,13 @@ const createUserHandler = async (event, context) => {
       userType,
       firstName,
       lastName,
-      
     };
-    console.log(user, "user");
     await dynamoDb
       .put({
         TableName: process.env.USERS_TABLE_NAME,
         Item: user,
+        ConditionExpression:
+          "attribute_not_exists(#email) AND attribute_not_exists(#phone)",
       })
       .promise();
   } catch (error) {
