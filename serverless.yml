@@ -15,7 +15,7 @@ provider:
     authorizers:
       customAuthorizer:
         type: request
-        functionName: src/handlers/Auth/auth.handler
+        functionName: auth
   environment:
     USERS_TABLE_NAME: ${self:custom.UsersTable.name}
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
