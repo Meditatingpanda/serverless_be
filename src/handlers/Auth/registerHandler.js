@@ -5,12 +5,14 @@ import createError from "http-errors";
 import AWS from "aws-sdk";
 import { UserType } from "../../enums/CommonEnum.js";
 import { sendEmail } from "../../lib/mail/sendMail.js";
+import {v4 as uuid} from 'uuid'
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const registerHandler = async (event, context) => {
   const { email, userType } = event.body;
 
   const user = await getUserByEmail(email);
+  console.log("user", user);
   if (user) {
     throw createError.Conflict("User already exists");
   }
@@ -27,6 +29,7 @@ const registerHandler = async (event, context) => {
       .put({
         TableName: process.env.USERS_TABLE_NAME,
         Item: {
+          userId: uuid(),
           email,
           userType,
           password: hashedPassword,

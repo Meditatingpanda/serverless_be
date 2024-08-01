@@ -41,26 +41,26 @@ resources:
     PropertiesTable: ${file(resources/dynamodb/PropertiesTable.yml):PropertiesTable}
     PropertyS3Bucket: ${file(resources/S3.yml):PropertyS3Bucket}
     PropertyS3BucketPolicy: ${file(resources/S3.yml):PropertyS3BucketPolicy}
-    GatewayResponse:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: EXPIRED_TOKEN
-        RestApiId:
-          Ref: "ApiGatewayRestApi"
-        StatusCode: "401"
-    AuthFailureGatewayResponse:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: UNAUTHORIZED
-        RestApiId:
-          Ref: "ApiGatewayRestApi"
-        StatusCode: "401"
+    # GatewayResponse:
+    #   Type: "AWS::ApiGateway::GatewayResponse"
+    #   Properties:
+    #     ResponseParameters:
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+    #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+    #     ResponseType: EXPIRED_TOKEN
+    #     RestApiId:
+    #       Ref: "ApiGatewayRestApi"
+    #     StatusCode: "401"
+    # AuthFailureGatewayResponse:
+    #   Type: "AWS::ApiGateway::GatewayResponse"
+    #   Properties:
+    #     ResponseParameters:
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+    #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+    #     ResponseType: UNAUTHORIZED
+    #     RestApiId:
+    #       Ref: "ApiGatewayRestApi"
+    #     StatusCode: "401"
 plugins:
   - serverless-offline
 functions:
