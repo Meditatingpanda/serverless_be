@@ -16,6 +16,7 @@ provider:
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
     PROPERTY_S3_BUCKET_NAME: ${self:custom.PropertyS3Bucket.name}
     JWT_SECRET: ${env.JWT_SECRET}
+    SENDER_EMAIL: ${env.SENDER_EMAIL}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -38,12 +39,25 @@ resources:
 plugins:
   - serverless-offline
 functions:
+  register:
+    handler: src/handlers/Auth/registerHandler.handler
+    events:
+      - httpApi:
+          path: /auth/register
+          method: post
   createUser:
     handler: src/handlers/User/createUser.handler
     events:
       - httpApi:
           path: /auth/create-user
           method: post
+          authorizer: auth
+  updateUser:
+    handler: src/handlers/User/updateUser.handler
+    events:
+      - httpApi:
+          path: /user/update-user
+          method: put
           authorizer: auth
   auth:
     handler: src/handlers/Auth/auth.handler

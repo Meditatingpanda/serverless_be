@@ -20,6 +20,7 @@
     "@middy/http-json-body-parser": "^5.4.5",
     "@middy/validator": "^5.4.5",
     "aws-sdk": "^2.1664.0",
+    "bcryptjs": "^2.4.3",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "sharp": "^0.33.4",
