@@ -11,38 +11,32 @@ export const PropertyType = {
   VILLA: "villa",
 };
 
-export const PropertyStatus = {
-  AVAILABLE: "available",
-  RENTED: "rented",
-  RESERVED: "reserved",
-};
 
 export const TenantStatus = {
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  BLOCKED: "BLOCKED",
 };
 
 export const LandlordStatus = {
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  BLOCKED: "BLOCKED",
 };
 
 export const InspectorStatus = {
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  BLOCKED: "BLOCKED",
 };
 
 export const UserStatus = {
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  BLOCKED: "BLOCKED",
 };
 
 export const LookingFor = {
-  FAMILY: "family",
-  BACHELOR: "bachelor",
+  FAMILY: "FAMILY",
+  BACHELOR: "BACHELOR",
 };
-

@@ -13,15 +13,27 @@ provider:
   region: "ap-south-1"
   environment:
     USERS_TABLE_NAME: ${self:custom.UsersTable.name}
+    PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
+    PROPERTY_S3_BUCKET_NAME: ${self:custom.PropertyS3Bucket.name}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "dynamodb:*"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"
 resources:
   Resources:
     UsersTable: ${file(resources/dynamodb/UserTable.yml):UsersTable}
     PropertiesTable: ${file(resources/dynamodb/PropertiesTable.yml):PropertiesTable}
+    PropertyS3Bucket: ${file(resources/S3.yml):PropertyS3Bucket}
+    PropertyS3BucketPolicy: ${file(resources/S3.yml):PropertyS3BucketPolicy}
 plugins:
   - serverless-offline
 functions:
@@ -35,3 +47,9 @@ custom:
   UsersTable:
     name: !Ref UsersTable
     arn: !GetAtt UsersTable.Arn
+  PropertiesTable:
+    name: !Ref PropertiesTable
+    arn: !GetAtt PropertiesTable.Arn
+  PropertyS3Bucket:
+    name: property-image-bfe-easylease-zdsfsfscfawcfsf-${self:provider.stage}
+    arn: !GetAtt PropertyS3Bucket.Arn

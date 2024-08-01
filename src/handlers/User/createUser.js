@@ -17,6 +17,16 @@ const createUserHandler = async (event, context) => {
   if (!Object.values(UserType).includes(userType)) {
     throw createError.BadRequest("Invalid user type");
   }
+  // find user by email or phone
+  const user = await dynamoDb
+    .get({
+      TableName: process.env.USERS_TABLE_NAME,
+      Key: { email, phone },
+    })
+    .promise();
+  if (user.Item) {
+    throw createError.BadRequest("User already exists");
+  }
   const userId = uuid();
   try {
     const user = {
@@ -33,6 +43,10 @@ const createUserHandler = async (event, context) => {
         Item: user,
         ConditionExpression:
           "attribute_not_exists(#email) AND attribute_not_exists(#phone)",
+        ExpressionAttributeNames: {
+          "#email": "email",
+          "#phone": "phone",
+        },
       })
       .promise();
   } catch (error) {
