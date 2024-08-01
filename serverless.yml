@@ -11,6 +11,11 @@ provider:
   memorySize: 256
   stage: ${opt:stage, 'dev'}
   region: "ap-south-1"
+  httpApi:
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: src/handlers/Auth/auth.handler
   environment:
     USERS_TABLE_NAME: ${self:custom.UsersTable.name}
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
@@ -73,14 +78,14 @@ functions:
       - httpApi:
           path: /auth/create-user
           method: post
-          authorizer: auth
+          authorizer: customAuthorizer
   updateUser:
     handler: src/handlers/User/updateUser.handler
     events:
       - httpApi:
           path: /user/update-user
           method: put
-          authorizer: auth
+          authorizer: customAuthorizer
 
 custom:
   UsersTable:
