@@ -5,7 +5,7 @@ import createError from "http-errors";
 import AWS from "aws-sdk";
 import { UserType } from "../../enums/CommonEnum.js";
 import { sendEmail } from "../../lib/mail/sendMail.js";
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from "uuid";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const registerHandler = async (event, context) => {
@@ -38,7 +38,10 @@ const registerHandler = async (event, context) => {
       .promise();
 
     // sent temp password to email
-    await sendEmail(email, "TEMP_PASSWORD", { tempPassword: password });
+    await sendEmail(email, "TEMP_PASSWORD", {
+      tempPassword: password,
+      name: userType,
+    });
   } catch (error) {
     console.error(error);
     throw createError.InternalServerError("Failed to register user");
