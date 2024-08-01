@@ -1,8 +1,8 @@
 import createError from "http-errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { commonMiddleware } from "../../lib/commonMiddleware";
-import { getUserByEmail } from "../../lib/user/getUserByEmail";
+import { commonMiddleware } from "../../lib/commonMiddleware.js";
+import { getUserByEmail } from "../../lib/user/getUserByEmail.js";
 
 const loginHandler = async (event, context) => {
   const { email, password } = event.body;
@@ -17,16 +17,15 @@ const loginHandler = async (event, context) => {
   if (!isPasswordValid) {
     throw createError.Unauthorized("Invalid password");
   }
+  console.log("user", user);
+  console.log("secret", process.env.JWT_SECRET);
   const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 
   return {
     statusCode: 200,
-    body: {
-      token,
-      msg: "Login successful",
-    },
+    body: JSON.stringify({ token, msg: "Login successful" }),
   };
 };
 
