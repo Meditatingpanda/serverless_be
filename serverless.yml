@@ -15,6 +15,7 @@ provider:
     USERS_TABLE_NAME: ${self:custom.UsersTable.name}
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
     PROPERTY_S3_BUCKET_NAME: ${self:custom.PropertyS3Bucket.name}
+    JWT_SECRET: ${env.JWT_SECRET}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -43,6 +44,10 @@ functions:
       - httpApi:
           path: /auth/create-user
           method: post
+          authorizer: auth
+  auth:
+    handler: src/handlers/Auth/auth.handler
+    cors: true
 custom:
   UsersTable:
     name: !Ref UsersTable

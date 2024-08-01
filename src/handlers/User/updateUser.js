@@ -5,7 +5,7 @@ import getUserById from "../../lib/user/getUserById.js";
 import { updateUserById } from "../../lib/user/updateUserById.js";
 
 const updateUserHandler = async (event, context) => {
-  const { userId } = event.pathParameters;
+  const { userId } = context.authorizer.claims;
   const {
     firstName,
     lastName,
