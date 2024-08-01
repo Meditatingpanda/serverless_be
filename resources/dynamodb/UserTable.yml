@@ -15,8 +15,6 @@ UsersTable:
     KeySchema:
       - AttributeName: userId
         KeyType: HASH # Partition key
-      - AttributeName: userType
-        KeyType: RANGE # Sort key
     GlobalSecondaryIndexes:
       - IndexName: EmailIndex
         KeySchema:

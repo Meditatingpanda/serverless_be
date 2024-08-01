@@ -15,8 +15,6 @@ PropertiesTable:
     KeySchema:
       - AttributeName: propertyId
         KeyType: HASH # Partition key
-      - AttributeName: location
-        KeyType: RANGE # Sort key
     GlobalSecondaryIndexes:
       - IndexName: LocationIndex
         KeySchema:

@@ -33,24 +33,10 @@ export const updateUserById = async (userId, user) => {
   }
   console.log("Updating user with ID:", userId);
   console.log("Update fields:", user);
-  const user = await dynamoDb
-    .get({
-      TableName: process.env.USERS_TABLE_NAME,
-      Key: { userId },
-    })
-    .promise();
 
-  if (!user.Item) {
-    throw createError.NotFound("User not found");
-  }
-  const userType = user.Item.userType;
-  const userId = user.Item.userId;
   const params = {
     TableName: process.env.USERS_TABLE_NAME,
-    Key: {
-      userId,
-      userType,
-    }, // Explicitly use userId as the key
+    Key: { userId }, // Explicitly use userId as the key
     UpdateExpression: `set ${updateExpressions.join(", ")}`,
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,
