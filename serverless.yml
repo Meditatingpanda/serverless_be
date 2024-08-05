@@ -78,6 +78,45 @@ functions:
       - httpApi:
           path: /auth/login
           method: post
+  registerProperty:
+    handler: src/handlers/Properties/registerProperty.handler
+    events:
+      - httpApi:
+          path: /property/register
+          method: post
+          authorizer: customAuthorizer
+
+  verifyProperty:
+    handler: src/handlers/Properties/verifyProperty.handler
+    events:
+      - httpApi:
+          path: /property/verify
+          method: put
+          authorizer: customAuthorizer
+
+  getMaintenanceRequests:
+    handler: src/handlers/Maintenance/getMaintenanceRequests.handler
+    events:
+      - httpApi:
+          path: /maintenance/requests
+          method: get
+          authorizer: customAuthorizer
+
+  searchProperties:
+    handler: src/handlers/Properties/searchProperties.handler
+    events:
+      - httpApi:
+          path: /property/search
+          method: get
+          authorizer: customAuthorizer
+
+  raiseMaintenanceRequest:
+    handler: src/handlers/Maintenance/raiseMaintenanceRequest.handler
+    events:
+      - httpApi:
+          path: /maintenance/raise
+          method: post
+          authorizer: customAuthorizer
 custom:
   UsersTable:
     name: !Ref UsersTable
