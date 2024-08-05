@@ -20,6 +20,7 @@ provider:
     USERS_TABLE_NAME: ${self:custom.UsersTable.name}
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
     PROPERTY_S3_BUCKET_NAME: ${self:custom.PropertyS3Bucket.name}
+    MAINTENANCE_REQUESTS_TABLE_NAME: ${self:custom.MaintenanceRequestsTable.name}
     JWT_SECRET: ${env.JWT_SECRET}
     SENDER_EMAIL: ${env.SENDER_EMAIL}
   iamRoleStatements:
@@ -39,6 +40,7 @@ resources:
   Resources:
     UsersTable: ${file(resources/dynamodb/UserTable.yml):UsersTable}
     PropertiesTable: ${file(resources/dynamodb/PropertiesTable.yml):PropertiesTable}
+    MaintenanceRequestsTable: ${file(resources/dynamodb/MaintenanceRequestsTable.yml):MaintenanceRequestsTable}
     PropertyS3Bucket: ${file(resources/S3.yml):PropertyS3Bucket}
     PropertyS3BucketPolicy: ${file(resources/S3.yml):PropertyS3BucketPolicy}
 plugins:
@@ -124,6 +126,9 @@ custom:
   PropertiesTable:
     name: !Ref PropertiesTable
     arn: !GetAtt PropertiesTable.Arn
+  MaintenanceRequestsTable:
+    name: !Ref MaintenanceRequestsTable
+    arn: !GetAtt MaintenanceRequestsTable.Arn
   PropertyS3Bucket:
     name: property-image-bfe-easylease-zdsfsfscfawcfsf-${self:provider.stage}
     arn: !GetAtt PropertyS3Bucket.Arn
