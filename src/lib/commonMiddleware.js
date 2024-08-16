@@ -4,9 +4,16 @@ import jsonBodyParser from "@middy/http-json-body-parser";
 import httpEventNormalizer from "@middy/http-event-normalizer";
 
 export const commonMiddleware = (handler) => {
-  return middy(handler).use([
-    httpErrorHandler(),
-    jsonBodyParser(),
-    httpEventNormalizer(),
-  ]);
+  return middy()
+    .use(httpErrorHandler())
+    .use(jsonBodyParser())
+    .use(httpEventNormalizer())
+    .use({
+      before: (request) => {
+        const { event } = request;
+        event.context = event.context || {};
+        event.context.callbackWaitsForEmptyEventLoop = false;
+      },
+    })
+    .handler(handler);
 };

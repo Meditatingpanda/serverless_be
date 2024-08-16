@@ -21,8 +21,8 @@ provider:
     PROPERTIES_TABLE_NAME: ${self:custom.PropertiesTable.name}
     PROPERTY_S3_BUCKET_NAME: ${self:custom.PropertyS3Bucket.name}
     MAINTENANCE_REQUESTS_TABLE_NAME: ${self:custom.MaintenanceRequestsTable.name}
-    JWT_SECRET: ${env.JWT_SECRET}
-    SENDER_EMAIL: ${env.SENDER_EMAIL}
+    JWT_SECRET: ${env:JWT_SECRET}
+    SENDER_EMAIL: ${env:SENDER_EMAIL}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -36,6 +36,10 @@ provider:
       Action:
         - "ses:SendEmail"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "iot:*"
+      Resource: "*"
 resources:
   Resources:
     UsersTable: ${file(resources/dynamodb/UserTable.yml):UsersTable}
@@ -43,8 +47,6 @@ resources:
     MaintenanceRequestsTable: ${file(resources/dynamodb/MaintenanceRequestsTable.yml):MaintenanceRequestsTable}
     PropertyS3Bucket: ${file(resources/S3.yml):PropertyS3Bucket}
     PropertyS3BucketPolicy: ${file(resources/S3.yml):PropertyS3BucketPolicy}
-plugins:
-  - serverless-offline
 functions:
   auth:
     handler: src/handlers/Auth/auth.handler

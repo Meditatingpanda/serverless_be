@@ -25,7 +25,7 @@ export const sendEmail = async (to, template, templateData) => {
         Data: "Temporary Password : EasyLease",
       },
     },
-    Source: "rgyana89@gmail.com",
+    Source: process.env.SENDER_EMAIL,
   };
 
   try {

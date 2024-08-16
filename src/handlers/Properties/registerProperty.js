@@ -44,6 +44,7 @@ const registerProperty = async (event, context) => {
       TableName: process.env.PROPERTIES_TABLE_NAME,
       Item: property,
     }).promise();
+    console.log("Property registered successfully");
 
     return {
       statusCode: 201,
