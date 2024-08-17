@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
+import createError from "http-errors";
 
-const generatePolicy = (principalId, methodArn) => {
-  const apiGatewayWildcard = methodArn.split("/", 2).join("/") + "/*";
+const generatePolicy = (principalId, methodArn, claims) => {
+  const apiGatewayWildcard = methodArn 
+    ? methodArn.split("/", 2).join("/") + "/*"
+    : "*";
 
   return {
     principalId,
@@ -15,26 +18,23 @@ const generatePolicy = (principalId, methodArn) => {
         },
       ],
     },
+    context: claims,
   };
 };
 
 export async function handler(event, context) {
-  if (!event.authorizationToken) {
-    throw "Unauthorized";
+  if (!event.headers.authorization) {
+    throw createError.Unauthorized("Unauthorized: No auth token");
   }
 
-  const token = event.authorizationToken.replace("Bearer ", "");
+  const token = event.headers.authorization.replace("Bearer ", "");
 
   try {
     const claims = jwt.verify(token, process.env.JWT_SECRET);
-    const policy = generatePolicy(claims.sub, event.methodArn);
-
-    return {
-      ...policy,
-      context: claims,
-    };
+    const policy = generatePolicy(claims.userId, event.methodArn, claims);
+    return policy;
   } catch (error) {
     console.log(error);
-    throw "Unauthorized";
+    throw createError.Unauthorized("Unauthorized", error);
   }
 }

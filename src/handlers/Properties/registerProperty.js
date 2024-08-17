@@ -1,6 +1,4 @@
 // landlord can register a property and update details
-
-import { commonMiddleware } from "../../lib/commonMiddleware.js";
 import createError from "http-errors";
 import { v4 as uuid } from "uuid";
 import { UserType } from "../../enums/CommonEnum.js";
@@ -10,7 +8,7 @@ import AWS from "aws-sdk";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const registerProperty = async (event, context) => {
-  const { userId } = context.authorizer.claims;
+  const { userId } = event.requestContext.authorizer.lambda;
   const { name, description, address, city, state, country, postalCode, propertyType, rent } = event.body;
 
   // Validate user type
@@ -20,7 +18,7 @@ const registerProperty = async (event, context) => {
   }).promise();
 
   if (user.Item.userType !== UserType.LANDLORD) {
-    throw createError.Forbidden("Only landlords can register properties");
+    throw new createError.Forbidden("Only landlords can register properties");
   }
 
   const property = {
@@ -52,8 +50,8 @@ const registerProperty = async (event, context) => {
     };
   } catch (error) {
     console.error(error);
-    throw createError.InternalServerError(error);
+    throw new createError.InternalServerError(error);
   }
 };
 
-export const handler = commonMiddleware(registerProperty);
+export const handler = registerProperty;
