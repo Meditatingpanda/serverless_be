@@ -97,6 +97,13 @@ functions:
           path: /property/verify
           method: put
           authorizer: customAuthorizer
+  getPropertiesByMe:
+    handler: src/handlers/Properties/getPropertiesByMe.handler
+    events:
+      - httpApi:
+          path: /property/get-properties-by-me
+          method: get
+          authorizer: customAuthorizer
 
   getMaintenanceRequests:
     handler: src/handlers/Maintenance/getMaintenanceRequests.handler
