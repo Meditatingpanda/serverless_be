@@ -41,9 +41,10 @@ const uploadPropertyImages = async (event, context) => {
         "You are not allowed to upload images to this property"
       );
     }
+   
 
     // Handle multiple image uploads
-    const images = event.multipart.imgs;
+    const images = event.body;
     console.log("images", images);
     if (!images || !Array.isArray(images)) {
       throw new createError.BadRequest("No images provided");
