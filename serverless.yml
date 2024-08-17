@@ -121,6 +121,13 @@ functions:
           path: /maintenance/raise
           method: post
           authorizer: customAuthorizer
+  uploadPropertyImages:
+    handler: src/handlers/Properties/uploadPropertyImages.handler
+    events:
+      - httpApi:
+          path: /property/upload-images/{propertyId}
+          method: post
+          authorizer: customAuthorizer
 custom:
   UsersTable:
     name: !Ref UsersTable

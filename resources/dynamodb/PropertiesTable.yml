@@ -12,8 +12,6 @@ PropertiesTable:
         AttributeType: S
       - AttributeName: verificationStatus
         AttributeType: S
-      - AttributeName: createdAt
-        AttributeType: S
     KeySchema:
       - AttributeName: propertyId
         KeyType: HASH

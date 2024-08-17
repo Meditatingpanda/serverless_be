@@ -13,7 +13,7 @@ const loginHandler = async (event, context) => {
 
     const user = await getUserByEmail(email);
     if (!user) {
-      throw new createError.Unauthorized("Invalid credentials");
+      throw new createError.Unauthorized("User Does not exist");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
