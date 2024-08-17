@@ -4,23 +4,22 @@ import { v4 as uuid } from "uuid";
 import { UserType } from "../../enums/CommonEnum.js";
 import { PropertyInspectionStatus } from "../../enums/PropertyEnums.js";
 import AWS from "aws-sdk";
+import { PropertyInputSchema } from "../../utils/inputSchema/PropertyInput.js";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const registerProperty = async (event, context) => {
   try {
     const { userId } = event.requestContext.authorizer.lambda;
-    const {
-      name,
-      description,
-      address,
-      city,
-      state,
-      country,
-      postalCode,
-      propertyType,
-      rent,
-    } = JSON.parse(event.body);
+    const { data } = JSON.parse(event.body);
+
+    const { error, value } = PropertyInputSchema.validate(data, {
+      abortEarly: false,
+    });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      throw new createError.BadRequest(errorMessages.join(", "));
+    }
 
     // Validate user type
     const { Item: user } = await dynamoDb
@@ -33,19 +32,12 @@ const registerProperty = async (event, context) => {
     if (!user || user.userType !== UserType.LANDLORD) {
       throw new createError.Forbidden("Only landlords can register properties");
     }
-    
+
     const property = {
       propertyId: uuid(),
       ownerId: userId,
-      name,
-      description,
-      address,
-      city,
-      state,
-      country,
-      postalCode,
-      propertyType,
-      rent,
+      ...value, // Spread the validated data
+      cityLocality: `${value.PropertyLocation.city.toLowerCase()}#${value.PropertyLocation.locality.toLowerCase()}`,
       verificationStatus: PropertyInspectionStatus.PENDING,
       createdAt: new Date().toISOString(),
     };
@@ -56,6 +48,7 @@ const registerProperty = async (event, context) => {
         Item: property,
       })
       .promise();
+
     console.log("Property registered successfully");
 
     return {

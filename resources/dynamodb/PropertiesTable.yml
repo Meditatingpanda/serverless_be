@@ -6,27 +6,29 @@ PropertiesTable:
     AttributeDefinitions:
       - AttributeName: propertyId
         AttributeType: S
-      - AttributeName: location
-        AttributeType: S
-      - AttributeName: status
-        AttributeType: S
       - AttributeName: ownerId
+        AttributeType: S
+      - AttributeName: cityLocality
+        AttributeType: S
+      - AttributeName: verificationStatus
+        AttributeType: S
+      - AttributeName: createdAt
         AttributeType: S
     KeySchema:
       - AttributeName: propertyId
-        KeyType: HASH # Partition key
+        KeyType: HASH
     GlobalSecondaryIndexes:
-      - IndexName: LocationIndex
-        KeySchema:
-          - AttributeName: location
-            KeyType: HASH
-          - AttributeName: status
-            KeyType: RANGE
-        Projection:
-          ProjectionType: ALL
       - IndexName: OwnerIndex
         KeySchema:
           - AttributeName: ownerId
             KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: LocationStatusIndex
+        KeySchema:
+          - AttributeName: cityLocality
+            KeyType: HASH
+          - AttributeName: verificationStatus
+            KeyType: RANGE
         Projection:
           ProjectionType: ALL
