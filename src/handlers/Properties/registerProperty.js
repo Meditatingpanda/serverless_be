@@ -2,7 +2,7 @@
 import createError from "http-errors";
 import { v4 as uuid } from "uuid";
 import { UserType } from "../../enums/CommonEnum.js";
-import { PropertyStatus } from "../../enums/PropertyEnums.js";
+import { PropertyInspectionStatus } from "../../enums/PropertyEnums.js";
 import AWS from "aws-sdk";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -33,7 +33,7 @@ const registerProperty = async (event, context) => {
     if (!user || user.userType !== UserType.LANDLORD) {
       throw new createError.Forbidden("Only landlords can register properties");
     }
-
+    
     const property = {
       propertyId: uuid(),
       ownerId: userId,
@@ -46,7 +46,7 @@ const registerProperty = async (event, context) => {
       postalCode,
       propertyType,
       rent,
-      status: PropertyStatus.PENDING,
+      verificationStatus: PropertyInspectionStatus.PENDING,
       createdAt: new Date().toISOString(),
     };
 
