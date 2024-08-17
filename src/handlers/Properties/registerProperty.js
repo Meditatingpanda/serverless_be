@@ -8,40 +8,54 @@ import AWS from "aws-sdk";
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const registerProperty = async (event, context) => {
-  const { userId } = event.requestContext.authorizer.lambda;
-  const { name, description, address, city, state, country, postalCode, propertyType, rent } = event.body;
-
-  // Validate user type
-  const user = await dynamoDb.get({
-    TableName: process.env.USERS_TABLE_NAME,
-    Key: { userId },
-  }).promise();
-
-  if (user.Item.userType !== UserType.LANDLORD) {
-    throw new createError.Forbidden("Only landlords can register properties");
-  }
-
-  const property = {
-    propertyId: uuid(),
-    ownerId: userId,
-    name,
-    description,
-    address,
-    city,
-    state,
-    country,
-    postalCode,
-    propertyType,
-    rent,
-    status: PropertyStatus.PENDING,
-    createdAt: new Date().toISOString(),
-  };
-
   try {
-    await dynamoDb.put({
-      TableName: process.env.PROPERTIES_TABLE_NAME,
-      Item: property,
-    }).promise();
+    const { userId } = event.requestContext.authorizer.lambda;
+    const {
+      name,
+      description,
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      propertyType,
+      rent,
+    } = JSON.parse(event.body);
+
+    // Validate user type
+    const { Item: user } = await dynamoDb
+      .get({
+        TableName: process.env.USERS_TABLE_NAME,
+        Key: { userId },
+      })
+      .promise();
+
+    if (!user || user.userType !== UserType.LANDLORD) {
+      throw new createError.Forbidden("Only landlords can register properties");
+    }
+
+    const property = {
+      propertyId: uuid(),
+      ownerId: userId,
+      name,
+      description,
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      propertyType,
+      rent,
+      status: PropertyStatus.PENDING,
+      createdAt: new Date().toISOString(),
+    };
+
+    await dynamoDb
+      .put({
+        TableName: process.env.PROPERTIES_TABLE_NAME,
+        Item: property,
+      })
+      .promise();
     console.log("Property registered successfully");
 
     return {
@@ -49,8 +63,19 @@ const registerProperty = async (event, context) => {
       body: JSON.stringify(property),
     };
   } catch (error) {
-    console.error(error);
-    throw new createError.InternalServerError(error);
+    console.error("Error registering property:", error);
+
+    if (error instanceof createError.HttpError) {
+      return {
+        statusCode: error.statusCode,
+        body: JSON.stringify({ error: error.message }),
+      };
+    }
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal Server Error" }),
+    };
   }
 };
 
